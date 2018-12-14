@@ -19,18 +19,19 @@ __date__ = '2018/11/30 16:57'
 __createby__ = 'PyCharm'
 
 import numpy as np
+import matplotlib.pylab as plt
 
 
 def softmax(a):
     expa = np.exp(a) # 指数函数
-    print(expa)
     suma = np.sum(expa)
-    print(suma)
     y = expa / suma
-    print(y)
+    return y
 
-a = np.array([0.3, 2.9, 4.0])
-softmax(a)
+a = np.arange(-5.0, 5.0, 0.1)
+y = softmax(a)
+plt.plot(a,y)
+plt.show()
 
 # e的x次方，x如果太大，则会出现内存溢出，提示nan非数字
 print('提示非数字')
