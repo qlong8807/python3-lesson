@@ -36,10 +36,19 @@ print(x*y)
 print('广播')
 print(x*3)
 z=np.array([2,5])
-print(x*z)
-print(x-z)
+print('x*z',x*z)
+
+print('dot',np.dot(x,z))
+
+print('x-z:',x-z)
 
 print('转为一维数组')
 print(x.flatten())
 print('获取满足一定条件的数组元素')
 print(x[x>1])
+
+x = np.array([[1,2],[3,4]])
+y = np.array([[3,3],[2,2]])
+print('矩阵乘法：')
+print(x.dot(y))
+print(np.dot(x,y))

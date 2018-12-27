@@ -2,7 +2,7 @@
 # _*_ coding:utf-8 _*_
 
 """
-当前文档注释
+根据已经学习好的参数，计算测试数据的识别率
 """
 
 __author__ = 'Jans'
@@ -58,8 +58,8 @@ for i in range(len(x)):
     y = predict(network,x[i])
     p = np.argmax(y) # 获取概率最高的元素的索引
     if(i < 10):
-        print(y)
-        print(p)
+        print('识别概率数组：',y)
+        print('数组中最大值的索引',p)
     if p == t[i]:
         accurary_cnt += 1
 
