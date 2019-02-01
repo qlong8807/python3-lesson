@@ -9,13 +9,23 @@ __author__ = 'Jans'
 __date__ = '2018/5/2 上午8:57'
 __createby__ = 'PyCharm'
 
+class A:
+    def foo(self,x):
+        print('foo:',x)
 
-num = (lambda a,b,c:b**2-4*a*c)(3,4,2)
-print(num)
+    @classmethod
+    def class_foo(cls,x):
+        print('class_foo:',x)
 
-print('9*9乘法表')
+    @staticmethod
+    def static_foo(x):
+        print('static foo:',x)
+a = A()
+a.foo(1)
+A.foo(a,2)
 
-for i in range(1,10):
-    for j in range(i,10):
-        print("{} * {} = {}".format(i,j,i*j),end="\t")
-    print()
+a.class_foo(3)
+A.class_foo(4)
+
+a.static_foo(5)
+A.static_foo(6)

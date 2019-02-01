@@ -20,8 +20,11 @@ station_ningqiang = 'NOY'  # 宁强南
 station_nanjing = 'NJH'  # 南京
 station_weinan = 'WNY'  # 渭南
 station_tongguan = 'TGY'  #潼关
+station_wuchang = 'WCN' # 武昌
+station_fuzhou = 'FZS' #福州
 # 是否需要无座
 need_wuzuo = False
+# need_wuzuo = True
 
 
 # 是否是数字
@@ -41,15 +44,17 @@ def has_ticket(s):
 # 查询和打印，checis为车次的数组或者字符串*,patten_str为车次开头的字符，没有就不用输入
 def queryAndPrint(train_date, start_station, end_station, checis, pattern_str=''):
     # print('data:' + train_date + ',start:' + start_station + ',end:' + end_station + ',checi:' + str(
-    #     checis) + ',patten:' + patten_str)
+    #     checis) + ',patten:' + patten_str)A
     url = 'https://kyfw.12306.cn/otn/leftTicket/queryZ?leftTicketDTO.train_date=' + train_date + '&leftTicketDTO.from_station=' + start_station + '&leftTicketDTO.to_station=' + end_station + '&purpose_codes=ADULT'
-    headerstr = {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit'}
+    headerstr = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:64.0) Gecko/20100101 Firefox/64.0'}
     cookiesstr = {'token': '12345', 'status': 'working'}
     try:
-        r = requests.get(url, headers=headerstr, cookies=cookiesstr, timeout=3.5)  # 3.5秒后超时
+        # r = requests.get(url, headers=headerstr, cookies=cookiesstr, timeout=3.5)  # 3.5秒后超时
+        r = requests.get(url, timeout=3.5)  # 3.5秒后超时
         # print('响应状态码：' + str(r.status_code) + '，编码：' + str(r.encoding))
         # content = r.content.decode()
         # print('返回内容是：' + content)
+        # print(r.json())
         piao_infos = r.json().get('data').get('result')
     except requests.exceptions.ReadTimeout:
         print('ReadTimeout：' + url)
@@ -63,18 +68,18 @@ def queryAndPrint(train_date, start_station, end_station, checis, pattern_str=''
     # print(type(piao_infos))
     # print('车票信息：' + str(piao_infos))
     # print('车票信息：'+ piao_infos[0])
-    for i in piao_infos:
+    for raw_train in piao_infos:
         # i就是1列车次的字符串格式信息
-        piao_info = i.split('|')
+        piao_info = raw_train.split('|')
         current_train_no = piao_info[3]
         if '*' == checis:
             if current_train_no.startswith(pattern_str):
                 checi = piao_info[3]
-                wopu = piao_info[-9]
-                yingzuo = piao_info[-8]
-                zuowei_level2 = piao_info[-7]
-                wuzuo = piao_info[-11]
-                zuowei_level1 = piao_info[-6]
+                wopu = piao_info[-10]
+                yingzuo = piao_info[-9]
+                zuowei_level2 = piao_info[-8]
+                wuzuo = piao_info[-12]
+                zuowei_level1 = piao_info[-7]
                 # print('车次：'+current_train_no+',一等座：'+zuowei_level1+',二等座：'+zuowei_level2)
                 if has_ticket(wopu) or has_ticket(yingzuo) or (need_wuzuo & has_ticket(wuzuo)) or has_ticket(zuowei_level2):
                     print('赶快订票---》》》日期:' + train_date + ',从:' + start_station + ',到:' + end_station +
@@ -84,10 +89,10 @@ def queryAndPrint(train_date, start_station, end_station, checis, pattern_str=''
                     call(["osascript", "-e", cmd])
         elif current_train_no in checis:
             checi = piao_info[3]
-            wopu = piao_info[-9]
-            yingzuo = piao_info[-8]
-            zuowei_level2 = piao_info[-7]
-            wuzuo = piao_info[-11]
+            wopu = piao_info[-10]
+            yingzuo = piao_info[-9]
+            zuowei_level2 = piao_info[-8]
+            wuzuo = piao_info[-12]
             if has_ticket(wopu) or has_ticket(yingzuo) or (need_wuzuo & has_ticket(wuzuo)) or has_ticket(zuowei_level2):
                 print('赶快订票---》》》日期:' + train_date + ',从:' + start_station + ',到:' + end_station +
                       ',车次：' + checi + ',二等座：' + zuowei_level2 + ',卧铺：' + wopu + ',硬座：' + yingzuo + ',无座：' + wuzuo)
@@ -106,19 +111,26 @@ if __name__ == '__main__':
           '车票查询开始运行。\" with title \"订票程序\"'
     call(["osascript", "-e", cmd])
     # 循环查询车票信息except (AssertionError,ZeroDivisionError),arg:
+    times = 0;
     while True:
+        times = times+1
+        print("开始执行第",times,"查询")
         # queryAndPrint('2018-02-23', station_huashan, station_suzhou, ['D308','G4324','G1976'])
-        # queryAndPrint('2018-02-23', station_xian, station_shanghai, ['D308','G4324','G1976'])
+        # queryAndPrint('2019-02-02', station_shanghai, station_xian, ['G1940'])
+        # queryAndPrint('2019-02-02', station_shanghai, station_huashan, ['G1940'])
         # queryAndPrint('2018-02-23', station_huashan, station_shanghai, ['D308','G4324','G1976'])
         # queryAndPrint('2018-02-24', station_huashan, station_suzhou, ['D308','G4324','G1976'])
-        # queryAndPrint('2018-02-24', station_xian, station_shanghai, ['D308','G4324','G1976'])
+        # queryAndPrint('2019-01-24', station_xian, station_shanghai, ['K362'])
         # queryAndPrint('2018-02-24', station_huashan, station_shanghai, ['D308','G4324','G1976'])
         # queryAndPrint('2018-02-11', station_suzhou, station_huashan, ['Z252'])
         # queryAndPrint('2018-02-11', station_suzhou, station_xian, ['Z252'])
         # queryAndPrint('2018-02-11', station_shanghai, station_huashan, ['Z252'])
         # queryAndPrint('2018-02-11', station_shanghai, station_xian, ['Z252'])
-        queryAndPrint('2018-02-28', station_xian, station_suzhou, '*', 'Z')
-        queryAndPrint('2018-02-28', station_xian, station_suzhou, '*', 'T')
+        # queryAndPrint('2018-02-28', station_xian, station_suzhou, '*', 'Z')
+        # queryAndPrint('2019-01-25', station_wuchang, station_huashan, '*', 'K')
+        queryAndPrint('2019-02-10', station_xian, station_fuzhou, ['K1318','T308'])
+        queryAndPrint('2019-02-10', station_weinan, station_fuzhou, ['K1318','T308'])
+        queryAndPrint('2019-02-10', station_tongguan, station_fuzhou, ['K1318','T308'])
         # queryAndPrint('2018-03-01', station_xian, station_suzhou, '*', 'Z')
         # queryAndPrint('2018-03-02', station_xian, station_suzhou, '*', 'Z')
         # queryAndPrint('2018-03-03', station_xian, station_suzhou, '*', 'Z')
